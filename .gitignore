@@ -1,4 +1,3 @@
 node_modules/
 frontend/dist/
-backend/db/data.json
 .env

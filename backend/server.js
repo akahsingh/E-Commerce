@@ -2,14 +2,15 @@ import express from "express";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { seedDatabase } from "./db/seed.js";
 import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/products.js";
 import cartRoutes from "./routes/cart.js";
 import orderRoutes from "./routes/orders.js";
 import paymentRoutes from "./routes/payment.js";
 
-// Seed database on startup
-import("./db/seed.js");
+// Seed database synchronously before server starts
+seedDatabase();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
