@@ -70,11 +70,11 @@ export default function Orders() {
                   </div>
                   <div className="text-left">
                     <p className="font-semibold text-gray-900">Order #{order.id}</p>
-                    <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+                    <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="text-lg font-bold text-gray-900">${order.total.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-gray-900">{"\u20B9"}{order.total.toLocaleString("en-IN")}</span>
                   {isExpanded ? <ChevronUp className="h-5 w-5 text-gray-400" /> : <ChevronDown className="h-5 w-5 text-gray-400" />}
                 </div>
               </button>
@@ -85,7 +85,7 @@ export default function Orders() {
                   <div className="grid sm:grid-cols-2 gap-4 mb-5 text-sm">
                     <div>
                       <span className="text-gray-500">Payment Method:</span>
-                      <span className="ml-2 font-medium text-gray-900 capitalize">{order.payment_method}</span>
+                      <span className="ml-2 font-medium text-gray-900 uppercase">{order.payment_method}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Shipping Address:</span>
@@ -102,10 +102,10 @@ export default function Orders() {
                           <Link to={`/products/${item.product_id}`} className="text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors">
                             {item.name}
                           </Link>
-                          <p className="text-sm text-gray-500">Qty: {item.quantity} x ${item.price.toFixed(2)}</p>
+                          <p className="text-sm text-gray-500">Qty: {item.quantity} x {"\u20B9"}{item.price.toLocaleString("en-IN")}</p>
                         </div>
                         <span className="text-sm font-semibold text-gray-900">
-                          ${(item.quantity * item.price).toFixed(2)}
+                          {"\u20B9"}{(item.quantity * item.price).toLocaleString("en-IN")}
                         </span>
                       </div>
                     ))}

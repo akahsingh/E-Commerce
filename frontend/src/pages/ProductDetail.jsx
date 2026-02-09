@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Package, Truck, Shield } from "lucide-react";
+import { ShoppingCart, Star, ArrowLeft, Package, Truck, Shield, MapPin } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 export default function ProductDetail() {
@@ -8,6 +8,9 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [pincode, setPincode] = useState("");
+  const [delivery, setDelivery] = useState(null);
+  const [pinError, setPinError] = useState("");
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -17,6 +20,22 @@ export default function ProductDetail() {
       .catch(() => setProduct(null))
       .finally(() => setLoading(false));
   }, [id]);
+
+  const checkDelivery = () => {
+    setPinError("");
+    setDelivery(null);
+    if (!/^\d{6}$/.test(pincode)) {
+      setPinError("Enter a valid 6-digit PIN code");
+      return;
+    }
+    fetch(`/api/delivery/estimate?pincode=${pincode}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) setPinError(data.error);
+        else setDelivery(data);
+      })
+      .catch(() => setPinError("Could not check delivery"));
+  };
 
   if (loading) {
     return (
@@ -74,7 +93,7 @@ export default function ProductDetail() {
             <span className="text-sm text-gray-500">({product.rating} rating)</span>
           </div>
 
-          <p className="text-3xl font-bold text-gray-900 mt-6">${product.price.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-gray-900 mt-6">{"\u20B9"}{product.price.toLocaleString("en-IN")}</p>
 
           <p className="text-gray-600 mt-4 leading-relaxed">{product.description}</p>
 
@@ -110,11 +129,43 @@ export default function ProductDetail() {
             </div>
           )}
 
+          {/* Delivery Estimation */}
+          <div className="mt-8 bg-gray-50 rounded-xl p-5">
+            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 mb-3">
+              <MapPin className="h-4 w-4 text-indigo-600" />
+              Check Delivery
+            </h3>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                maxLength={6}
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onKeyDown={(e) => e.key === "Enter" && checkDelivery()}
+                placeholder="Enter PIN code"
+                className="input-field flex-1 !py-2 text-sm"
+              />
+              <button onClick={checkDelivery} className="btn-secondary !py-2 text-sm">
+                Check
+              </button>
+            </div>
+            {pinError && <p className="text-sm text-red-500 mt-2">{pinError}</p>}
+            {delivery && (
+              <div className="mt-3 text-sm">
+                <p className="text-green-600 font-medium">
+                  <Truck className="h-4 w-4 inline mr-1" />
+                  Delivery by {delivery.estimated_delivery} ({delivery.business_days})
+                </p>
+                <p className="text-gray-500 mt-1">{delivery.zone} &middot; Free Delivery</p>
+              </div>
+            )}
+          </div>
+
           {/* Trust badges */}
-          <div className="mt-10 grid grid-cols-2 gap-4">
+          <div className="mt-6 grid grid-cols-2 gap-4">
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <Truck className="h-5 w-5 text-gray-500" />
-              <span className="text-sm text-gray-600">Free shipping over $50</span>
+              <span className="text-sm text-gray-600">Free delivery across India</span>
             </div>
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <Shield className="h-5 w-5 text-gray-500" />
@@ -123,6 +174,27 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Specifications Table */}
+      {product.specs && Object.keys(product.specs).length > 0 && (
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Specifications</h2>
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <table className="w-full">
+              <tbody>
+                {Object.entries(product.specs).map(([key, value], i) => (
+                  <tr key={key} className={i % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                    <td className="px-6 py-3 text-sm font-medium text-gray-500 w-1/3 capitalize">
+                      {key.replace(/_/g, " ")}
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-900">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

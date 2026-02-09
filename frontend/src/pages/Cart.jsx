@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ShoppingBag } from "lucide-react";
+import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ShoppingBag, Truck } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 export default function Cart() {
@@ -47,7 +47,7 @@ export default function Cart() {
                 <Link to={`/products/${item.product_id}`} className="font-semibold text-gray-900 hover:text-indigo-600 transition-colors line-clamp-1">
                   {item.name}
                 </Link>
-                <p className="text-lg font-bold text-gray-900 mt-1">${item.price.toFixed(2)}</p>
+                <p className="text-lg font-bold text-gray-900 mt-1">{"\u20B9"}{item.price.toLocaleString("en-IN")}</p>
 
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center border border-gray-300 rounded-lg">
@@ -77,7 +77,7 @@ export default function Cart() {
               </div>
               <div className="hidden sm:block text-right">
                 <p className="text-lg font-bold text-gray-900">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  {"\u20B9"}{(item.price * item.quantity).toLocaleString("en-IN")}
                 </p>
               </div>
             </div>
@@ -92,16 +92,21 @@ export default function Cart() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{"\u20B9"}{total.toLocaleString("en-IN")}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>{total >= 50 ? "Free" : "$5.99"}</span>
+                <span className="text-green-600 font-medium">FREE</span>
               </div>
               <div className="border-t pt-3 flex justify-between font-semibold text-gray-900 text-base">
                 <span>Total</span>
-                <span>${(total + (total >= 50 ? 0 : 5.99)).toFixed(2)}</span>
+                <span>{"\u20B9"}{total.toLocaleString("en-IN")}</span>
               </div>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg p-3">
+              <Truck className="h-4 w-4 flex-shrink-0" />
+              <span>Free delivery across India</span>
             </div>
 
             <Link to="/checkout" className="btn-primary w-full mt-6 flex items-center justify-center gap-2">

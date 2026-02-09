@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
           <span className="text-sm text-gray-600">{product.rating}</span>
         </div>
         <div className="flex items-center justify-between mt-3">
-          <span className="text-lg font-bold text-gray-900">${product.price.toFixed(2)}</span>
+          <span className="text-lg font-bold text-gray-900">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
           <button
             onClick={() => addToCart(product.id)}
             disabled={product.stock === 0}
