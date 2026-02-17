@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ShoppingCart, Star, ArrowLeft, Package, Truck, Shield, MapPin } from "lucide-react";
+import { Star, Package, Truck, Shield, MapPin } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 export default function ProductDetail() {
@@ -24,29 +24,24 @@ export default function ProductDetail() {
   const checkDelivery = () => {
     setPinError("");
     setDelivery(null);
-    if (!/^\d{6}$/.test(pincode)) {
-      setPinError("Enter a valid 6-digit PIN code");
-      return;
-    }
+    if (!/^\d{6}$/.test(pincode)) { setPinError("Enter a valid 6-digit PIN code"); return; }
     fetch(`/api/delivery/estimate?pincode=${pincode}`)
       .then((r) => r.json())
-      .then((data) => {
-        if (data.error) setPinError(data.error);
-        else setDelivery(data);
-      })
+      .then((data) => { if (data.error) setPinError(data.error); else setDelivery(data); })
       .catch(() => setPinError("Could not check delivery"));
   };
 
   if (loading) {
     return (
-      <div className="animate-pulse">
-        <div className="grid md:grid-cols-2 gap-10">
-          <div className="aspect-square bg-gray-200 rounded-2xl"></div>
-          <div className="space-y-4">
-            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-8 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-full"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+      <div className="max-w-screen-amazon mx-auto px-4 py-6">
+        <div className="bg-white p-6 animate-pulse">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="aspect-square bg-gray-200"></div>
+            <div className="space-y-4">
+              <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -55,146 +50,133 @@ export default function ProductDetail() {
 
   if (!product) {
     return (
-      <div className="text-center py-20">
-        <h2 className="text-2xl font-bold text-gray-900">Product Not Found</h2>
-        <Link to="/products" className="btn-primary mt-4 inline-block">Back to Products</Link>
+      <div className="max-w-screen-amazon mx-auto px-4 py-6">
+        <div className="bg-white text-center py-20 px-4">
+          <h2 className="text-xl font-bold text-amazon-text">Product Not Found</h2>
+          <Link to="/products" className="btn-primary mt-4 inline-block">Back to Products</Link>
+        </div>
       </div>
     );
   }
 
-  const handleAddToCart = () => {
-    addToCart(product.id, quantity);
-  };
+  const stars = Math.floor(product.rating);
+  const hasHalf = product.rating - stars >= 0.5;
 
   return (
-    <div>
-      <Link to="/products" className="inline-flex items-center gap-1.5 text-gray-500 hover:text-indigo-600 transition-colors mb-6">
-        <ArrowLeft className="h-4 w-4" />
-        Back to Products
-      </Link>
+    <div className="max-w-screen-amazon mx-auto px-4 py-4">
+      <div className="text-sm text-amazon-text-secondary mb-3">
+        <Link to="/products" className="amazon-link">All Products</Link>
+        <span className="mx-1">&rsaquo;</span>
+        <Link to={`/products?category=${encodeURIComponent(product.category)}`} className="amazon-link">{product.category}</Link>
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-10">
-        {/* Image */}
-        <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-        </div>
-
-        {/* Details */}
-        <div>
-          <span className="text-sm font-medium text-indigo-600 uppercase tracking-wide">{product.category}</span>
-          <h1 className="text-3xl font-bold text-gray-900 mt-2">{product.name}</h1>
-
-          <div className="flex items-center gap-2 mt-3">
-            <div className="flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className={`h-5 w-5 ${i < Math.floor(product.rating) ? "fill-amber-400 text-amber-400" : "text-gray-300"}`} />
-              ))}
+      <div className="bg-white p-4 sm:p-6">
+        <div className="grid md:grid-cols-5 gap-6">
+          {/* Image */}
+          <div className="md:col-span-2">
+            <div className="aspect-square bg-white flex items-center justify-center border border-gray-200 rounded overflow-hidden sticky top-28 p-4">
+              <img src={product.image} alt={product.name} className="max-w-full max-h-full object-contain" />
             </div>
-            <span className="text-sm text-gray-500">({product.rating} rating)</span>
           </div>
 
-          <p className="text-3xl font-bold text-gray-900 mt-6">{"\u20B9"}{product.price.toLocaleString("en-IN")}</p>
-
-          <p className="text-gray-600 mt-4 leading-relaxed">{product.description}</p>
-
-          <div className="mt-6 flex items-center gap-2">
-            <Package className={`h-5 w-5 ${product.stock > 0 ? "text-green-500" : "text-red-500"}`} />
-            <span className={`font-medium ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}>
-              {product.stock > 0 ? `${product.stock} in stock` : "Out of Stock"}
-            </span>
-          </div>
-
-          {/* Quantity & Add to Cart */}
-          {product.stock > 0 && (
-            <div className="mt-8 flex items-center gap-4">
-              <div className="flex items-center border border-gray-300 rounded-lg">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 font-medium text-gray-900 min-w-[3rem] text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  className="px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  +
-                </button>
+          {/* Info */}
+          <div className="md:col-span-2">
+            <h1 className="text-xl font-medium text-amazon-text leading-tight">{product.name}</h1>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-sm text-amazon-link">{product.rating}</span>
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className={`h-4 w-4 ${i < stars ? "fill-amazon-star text-amazon-star" : i === stars && hasHalf ? "fill-amazon-star/50 text-amazon-star" : "text-gray-300"}`} />
+                ))}
               </div>
-              <button onClick={handleAddToCart} className="btn-primary flex items-center gap-2 flex-1">
-                <ShoppingCart className="h-5 w-5" />
-                Add to Cart
-              </button>
             </div>
-          )}
 
-          {/* Delivery Estimation */}
-          <div className="mt-8 bg-gray-50 rounded-xl p-5">
-            <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2 mb-3">
-              <MapPin className="h-4 w-4 text-indigo-600" />
-              Check Delivery
-            </h3>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                maxLength={6}
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                onKeyDown={(e) => e.key === "Enter" && checkDelivery()}
-                placeholder="Enter PIN code"
-                className="input-field flex-1 !py-2 text-sm"
-              />
-              <button onClick={checkDelivery} className="btn-secondary !py-2 text-sm">
-                Check
-              </button>
+            <div className="border-b border-gray-200 my-3"></div>
+
+            <div>
+              {product.discount > 0 && <span className="text-amazon-price-red text-xl font-medium">-{product.discount}% </span>}
+              <span className="text-[28px] font-medium text-amazon-text">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
             </div>
-            {pinError && <p className="text-sm text-red-500 mt-2">{pinError}</p>}
-            {delivery && (
-              <div className="mt-3 text-sm">
-                <p className="text-green-600 font-medium">
-                  <Truck className="h-4 w-4 inline mr-1" />
-                  Delivery by {delivery.estimated_delivery} ({delivery.business_days})
-                </p>
-                <p className="text-gray-500 mt-1">{delivery.zone} &middot; Free Delivery</p>
+            {product.mrp > product.price && (
+              <p className="text-sm text-amazon-text-secondary mt-1">M.R.P.: <span className="line-through">{"\u20B9"}{product.mrp.toLocaleString("en-IN")}</span></p>
+            )}
+            <p className="text-xs text-amazon-text-secondary mt-0.5">Inclusive of all taxes</p>
+
+            <div className="border-b border-gray-200 my-3"></div>
+
+            <div>
+              <h3 className="text-sm font-bold text-amazon-text mb-2">About this item</h3>
+              <p className="text-sm text-amazon-text leading-relaxed">{product.description}</p>
+            </div>
+
+            {product.specs && Object.keys(product.specs).length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-sm font-bold text-amazon-text mb-2">Product Details</h3>
+                <table className="w-full text-sm">
+                  <tbody>
+                    {Object.entries(product.specs).map(([key, value], i) => (
+                      <tr key={key} className={i % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                        <td className="px-3 py-2 font-medium text-amazon-text-secondary w-2/5 capitalize">{key.replace(/_/g, " ")}</td>
+                        <td className="px-3 py-2 text-amazon-text">{value}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
 
-          {/* Trust badges */}
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <Truck className="h-5 w-5 text-gray-500" />
-              <span className="text-sm text-gray-600">Free delivery across India</span>
-            </div>
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-              <Shield className="h-5 w-5 text-gray-500" />
-              <span className="text-sm text-gray-600">Secure checkout</span>
+          {/* Buy Box */}
+          <div className="md:col-span-1">
+            <div className="border border-gray-300 rounded-lg p-4 space-y-3 sticky top-28">
+              <p className="text-[28px] font-medium text-amazon-text">{"\u20B9"}{product.price.toLocaleString("en-IN")}</p>
+              <p className="text-xs text-amazon-text-secondary">FREE Delivery across India</p>
+
+              {product.stock > 0 ? (
+                <>
+                  <p className="text-lg text-green-700 font-medium">In Stock</p>
+                  <div>
+                    <label className="text-sm text-amazon-text">Qty:</label>
+                    <select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="ml-2 border border-gray-300 rounded px-2 py-1 text-sm bg-gray-100">
+                      {[...Array(Math.min(product.stock, 10))].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>{i + 1}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <button onClick={() => addToCart(product.id, quantity)} className="btn-primary w-full !py-2">Add to Cart</button>
+                  <button onClick={() => addToCart(product.id, quantity)} className="btn-orange w-full !py-2">Buy Now</button>
+                </>
+              ) : (
+                <p className="text-lg text-red-600 font-medium">Currently unavailable</p>
+              )}
+
+              <div className="border-t border-gray-200 pt-3">
+                <div className="flex items-center gap-2 text-sm mb-2">
+                  <MapPin className="h-4 w-4 text-amazon-link" />
+                  <span className="text-amazon-link">Deliver to</span>
+                </div>
+                <div className="flex gap-1">
+                  <input type="text" maxLength={6} value={pincode} onChange={(e) => setPincode(e.target.value.replace(/\D/g, "").slice(0, 6))} onKeyDown={(e) => e.key === "Enter" && checkDelivery()} placeholder="Enter PIN" className="input-field !py-1.5 text-xs flex-1" />
+                  <button onClick={checkDelivery} className="text-xs text-amazon-link hover:text-amazon-link-hover px-2">Check</button>
+                </div>
+                {pinError && <p className="text-xs text-red-500 mt-1">{pinError}</p>}
+                {delivery && (
+                  <div className="mt-2 text-xs">
+                    <p className="text-green-700 font-medium"><Truck className="h-3 w-3 inline mr-1" />Delivery by {delivery.estimated_delivery}</p>
+                    <p className="text-amazon-text-secondary mt-0.5">{delivery.zone} &middot; FREE</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-gray-200 pt-3 space-y-2 text-xs text-amazon-text-secondary">
+                <div className="flex items-center gap-2"><Truck className="h-4 w-4" /><span>Free delivery</span></div>
+                <div className="flex items-center gap-2"><Shield className="h-4 w-4" /><span>Secure transaction</span></div>
+                <div className="flex items-center gap-2"><Package className="h-4 w-4" /><span>Sold by ShopHub</span></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Specifications Table */}
-      {product.specs && Object.keys(product.specs).length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Specifications</h2>
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <table className="w-full">
-              <tbody>
-                {Object.entries(product.specs).map(([key, value], i) => (
-                  <tr key={key} className={i % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                    <td className="px-6 py-3 text-sm font-medium text-gray-500 w-1/3 capitalize">
-                      {key.replace(/_/g, " ")}
-                    </td>
-                    <td className="px-6 py-3 text-sm text-gray-900">{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
     </div>
   );
 }

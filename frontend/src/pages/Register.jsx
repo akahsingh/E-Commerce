@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserPlus, Mail, Lock, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
@@ -32,90 +31,83 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-            <UserPlus className="h-8 w-8 text-indigo-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-          <p className="mt-2 text-gray-500">Join ShopHub and start shopping today</p>
+    <div className="min-h-[70vh] flex items-center justify-center py-8">
+      <div className="w-full max-w-[350px]">
+        <div className="text-center mb-6">
+          <Link to="/" className="text-2xl font-bold text-amazon-text">
+            Shop<span className="text-amazon-orange">Hub</span><span className="text-xs">.in</span>
+          </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <div className="border border-gray-300 rounded-lg p-5 bg-white">
+          <h1 className="text-[28px] font-normal text-amazon-text mb-4">Create account</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-bold text-amazon-text mb-1">Your name</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="input-field pl-10"
-                placeholder="John Doe"
+                className="input-field"
+                placeholder="First and last name"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div>
+              <label className="block text-sm font-bold text-amazon-text mb-1">Email</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input-field pl-10"
+                className="input-field"
                 placeholder="you@example.com"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div>
+              <label className="block text-sm font-bold text-amazon-text mb-1">Password</label>
               <input
                 type="password"
                 required
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-field pl-10"
+                className="input-field"
                 placeholder="At least 6 characters"
               />
+              <p className="text-xs text-amazon-text-secondary mt-1">Passwords must be at least 6 characters.</p>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div>
+              <label className="block text-sm font-bold text-amazon-text mb-1">Re-enter password</label>
               <input
                 type="password"
                 required
                 minLength={6}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="input-field pl-10"
-                placeholder="Confirm your password"
+                className="input-field"
               />
             </div>
-          </div>
 
-          <button type="submit" disabled={loading} className="btn-primary w-full !py-3 text-base">
-            {loading ? "Creating account..." : "Create Account"}
-          </button>
+            <button type="submit" disabled={loading} className="btn-primary w-full !py-2">
+              {loading ? "Creating account..." : "Create your ShopHub account"}
+            </button>
+          </form>
 
-          <p className="text-center text-sm text-gray-500">
-            Already have an account?{" "}
-            <Link to="/login" className="text-indigo-600 font-medium hover:text-indigo-700">
-              Sign in
-            </Link>
+          <p className="text-xs text-amazon-text-secondary mt-4 leading-relaxed">
+            By creating an account, you agree to ShopHub's Conditions of Use and Privacy Notice.
           </p>
-        </form>
+
+          <div className="border-t border-gray-200 mt-4 pt-4">
+            <p className="text-sm text-amazon-text">
+              Already have an account? <Link to="/login" className="amazon-link">Sign in</Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

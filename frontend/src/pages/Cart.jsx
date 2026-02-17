@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, ShoppingBag, Truck } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
 export default function Cart() {
@@ -7,115 +7,103 @@ export default function Cart() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="max-w-screen-amazon mx-auto px-4 py-6">
+        <div className="bg-white p-6 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+          {[1, 2].map((i) => (
+            <div key={i} className="flex gap-4 py-4 border-b">
+              <div className="w-24 h-24 bg-gray-200"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-20">
-        <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto" />
-        <h2 className="text-2xl font-bold text-gray-900 mt-4">Your cart is empty</h2>
-        <p className="text-gray-500 mt-2">Looks like you haven't added anything yet.</p>
-        <Link to="/products" className="btn-primary inline-flex items-center gap-2 mt-6">
-          <ShoppingBag className="h-5 w-5" />
-          Start Shopping
-        </Link>
+      <div className="max-w-screen-amazon mx-auto px-4 py-6">
+        <div className="bg-white p-8 text-center">
+          <ShoppingCart className="h-16 w-16 text-gray-300 mx-auto" />
+          <h2 className="text-2xl font-bold text-amazon-text mt-4">Your ShopHub Cart is empty</h2>
+          <p className="text-amazon-text-secondary mt-2">Your shopping cart is waiting. Give it purpose.</p>
+          <Link to="/products" className="btn-primary inline-block mt-6">Continue Shopping</Link>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+  const itemCount = items.reduce((s, i) => s + i.quantity, 0);
 
-      <div className="grid lg:grid-cols-3 gap-8">
+  return (
+    <div className="max-w-screen-amazon mx-auto px-4 py-4">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="flex-1 bg-white p-4 sm:p-6">
+          <h1 className="text-2xl font-bold text-amazon-text pb-3 border-b border-gray-200">Shopping Cart</h1>
+          <p className="text-sm text-amazon-text-secondary text-right pb-2 border-b border-gray-200">Price</p>
+
           {items.map((item) => (
-            <div key={item.id} className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 flex gap-4 sm:gap-6">
+            <div key={item.id} className="flex gap-4 py-4 border-b border-gray-200">
               <Link to={`/products/${item.product_id}`} className="flex-shrink-0">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg"
-                />
+                <img src={item.image} alt={item.name} className="w-[120px] h-[120px] object-contain" />
               </Link>
               <div className="flex-1 min-w-0">
-                <Link to={`/products/${item.product_id}`} className="font-semibold text-gray-900 hover:text-indigo-600 transition-colors line-clamp-1">
+                <Link to={`/products/${item.product_id}`} className="text-sm text-amazon-text hover:text-amazon-link-hover line-clamp-2">
                   {item.name}
                 </Link>
-                <p className="text-lg font-bold text-gray-900 mt-1">{"\u20B9"}{item.price.toLocaleString("en-IN")}</p>
-
-                <div className="flex items-center justify-between mt-3">
-                  <div className="flex items-center border border-gray-300 rounded-lg">
+                <p className="text-xs text-green-700 mt-1">In Stock</p>
+                <p className="text-xs text-amazon-text-secondary mt-0.5">FREE Delivery</p>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center border border-gray-300 rounded">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       disabled={item.quantity <= 1}
-                      className="p-1.5 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                      className="p-1.5 text-amazon-text hover:bg-gray-100 disabled:opacity-30"
                     >
-                      <Minus className="h-4 w-4" />
+                      <Minus className="h-3 w-3" />
                     </button>
-                    <span className="px-3 text-sm font-medium">{item.quantity}</span>
+                    <span className="px-3 text-sm font-medium bg-gray-50 border-x border-gray-300">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       disabled={item.quantity >= item.stock}
-                      className="p-1.5 text-gray-600 hover:text-gray-900 disabled:opacity-30"
+                      className="p-1.5 text-amazon-text hover:bg-gray-100 disabled:opacity-30"
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-3 w-3" />
                     </button>
                   </div>
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-500 hover:text-red-700 p-1.5 hover:bg-red-50 rounded-lg transition-colors"
-                  >
-                    <Trash2 className="h-5 w-5" />
+                  <span className="text-gray-300">|</span>
+                  <button onClick={() => removeFromCart(item.id)} className="text-sm text-amazon-link hover:text-amazon-link-hover">
+                    Delete
                   </button>
                 </div>
               </div>
-              <div className="hidden sm:block text-right">
-                <p className="text-lg font-bold text-gray-900">
-                  {"\u20B9"}{(item.price * item.quantity).toLocaleString("en-IN")}
-                </p>
+              <div className="text-right flex-shrink-0">
+                <p className="text-lg font-bold text-amazon-text">{"\u20B9"}{(item.price * item.quantity).toLocaleString("en-IN")}</p>
               </div>
             </div>
           ))}
+
+          <div className="text-right pt-3">
+            <p className="text-lg text-amazon-text">
+              Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"}): <span className="font-bold">{"\u20B9"}{total.toLocaleString("en-IN")}</span>
+            </p>
+          </div>
         </div>
 
-        {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl border border-gray-100 p-6 sticky top-24">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
-
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between text-gray-600">
-                <span>Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)</span>
-                <span>{"\u20B9"}{total.toLocaleString("en-IN")}</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>Shipping</span>
-                <span className="text-green-600 font-medium">FREE</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between font-semibold text-gray-900 text-base">
-                <span>Total</span>
-                <span>{"\u20B9"}{total.toLocaleString("en-IN")}</span>
-              </div>
-            </div>
-
-            <div className="mt-4 flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg p-3">
-              <Truck className="h-4 w-4 flex-shrink-0" />
-              <span>Free delivery across India</span>
-            </div>
-
-            <Link to="/checkout" className="btn-primary w-full mt-6 flex items-center justify-center gap-2">
-              Proceed to Checkout
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-
-            <Link to="/products" className="block text-center text-sm text-indigo-600 hover:text-indigo-700 font-medium mt-4">
-              Continue Shopping
+        {/* Subtotal Box */}
+        <div className="lg:w-[300px] flex-shrink-0">
+          <div className="bg-white p-4 border border-gray-200 rounded">
+            <p className="text-xs text-green-700 mb-2">Your order is eligible for FREE Delivery.</p>
+            <p className="text-sm text-amazon-text">
+              Subtotal ({itemCount} {itemCount === 1 ? "item" : "items"}): <span className="font-bold text-lg">{"\u20B9"}{total.toLocaleString("en-IN")}</span>
+            </p>
+            <Link to="/checkout" className="btn-primary w-full mt-4 block text-center !py-2">
+              Proceed to Buy
             </Link>
           </div>
         </div>

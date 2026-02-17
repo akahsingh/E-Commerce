@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogIn, Mail, Lock } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
@@ -26,58 +25,60 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-            <LogIn className="h-8 w-8 text-indigo-600" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="mt-2 text-gray-500">Sign in to your account to continue</p>
+    <div className="min-h-[70vh] flex items-center justify-center py-8">
+      <div className="w-full max-w-[350px]">
+        <div className="text-center mb-6">
+          <Link to="/" className="text-2xl font-bold text-amazon-text">
+            Shop<span className="text-amazon-orange">Hub</span><span className="text-xs">.in</span>
+          </Link>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <div className="border border-gray-300 rounded-lg p-5 bg-white">
+          <h1 className="text-[28px] font-normal text-amazon-text mb-4">Sign in</h1>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-bold text-amazon-text mb-1">Email</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input-field pl-10"
+                className="input-field"
                 placeholder="you@example.com"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <div>
+              <label className="block text-sm font-bold text-amazon-text mb-1">Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-field pl-10"
+                className="input-field"
                 placeholder="Enter your password"
               />
             </div>
-          </div>
 
-          <button type="submit" disabled={loading} className="btn-primary w-full !py-3 text-base">
-            {loading ? "Signing in..." : "Sign In"}
-          </button>
+            <button type="submit" disabled={loading} className="btn-primary w-full !py-2">
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
 
-          <p className="text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-indigo-600 font-medium hover:text-indigo-700">
-              Create one
-            </Link>
+          <p className="text-xs text-amazon-text-secondary mt-4 leading-relaxed">
+            By continuing, you agree to ShopHub's Conditions of Use and Privacy Notice.
           </p>
-        </form>
+        </div>
+
+        <div className="relative mt-6 mb-4">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-300"></div></div>
+          <div className="relative flex justify-center text-xs text-amazon-text-secondary"><span className="bg-amazon-page px-2">New to ShopHub?</span></div>
+        </div>
+
+        <Link to="/register" className="btn-secondary w-full block text-center !py-2">
+          Create your ShopHub account
+        </Link>
       </div>
     </div>
   );

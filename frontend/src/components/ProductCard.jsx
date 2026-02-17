@@ -5,40 +5,52 @@ import { useCart } from "../context/CartContext";
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
+  const stars = Math.floor(product.rating);
+  const hasHalf = product.rating - stars >= 0.5;
+
   return (
-    <div className="card group">
+    <div className="bg-white p-4 relative group">
       <Link to={`/products/${product.id}`}>
-        <div className="aspect-square overflow-hidden bg-gray-100">
+        <div className="aspect-square overflow-hidden bg-white flex items-center justify-center mb-3 p-2">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
         </div>
       </Link>
-      <div className="p-4">
-        <Link to={`/products/${product.id}`}>
-          <span className="text-xs font-medium text-indigo-600 uppercase tracking-wide">{product.category}</span>
-          <h3 className="mt-1 font-semibold text-gray-900 line-clamp-1 hover:text-indigo-600 transition-colors">
-            {product.name}
-          </h3>
+      <div>
+        <Link to={`/products/${product.id}`} className="text-sm text-amazon-text hover:text-amazon-link-hover line-clamp-2 leading-snug min-h-[2.5rem]">
+          {product.name}
         </Link>
-        <div className="flex items-center gap-1 mt-1.5">
-          <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-          <span className="text-sm text-gray-600">{product.rating}</span>
+        <div className="flex items-center gap-1 mt-1">
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`h-4 w-4 ${i < stars ? "fill-amazon-star text-amazon-star" : i === stars && hasHalf ? "fill-amazon-star/50 text-amazon-star" : "text-gray-300"}`}
+              />
+            ))}
+          </div>
+          <span className="text-sm text-amazon-link">{product.rating}</span>
         </div>
-        <div className="flex items-center justify-between mt-3">
-          <span className="text-lg font-bold text-gray-900">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
-          <button
-            onClick={() => addToCart(product.id)}
-            disabled={product.stock === 0}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <ShoppingCart className="h-3.5 w-3.5" />
-            {product.stock === 0 ? "Out of Stock" : "Add"}
-          </button>
+        <div className="mt-1.5">
+          <div className="flex items-baseline gap-1">
+            <span className="text-xs">{"\u20B9"}</span>
+            <span className="text-xl font-medium text-amazon-text">{product.price.toLocaleString("en-IN")}</span>
+          </div>
+          {product.mrp > product.price && (
+            <div className="flex items-center gap-2 text-xs mt-0.5">
+              <span className="text-amazon-text-secondary">M.R.P.: <span className="line-through">{"\u20B9"}{product.mrp.toLocaleString("en-IN")}</span></span>
+              <span className="text-amazon-price-red">({product.discount}% off)</span>
+            </div>
+          )}
         </div>
+        <p className="text-xs text-amazon-text-secondary mt-1">FREE Delivery</p>
+        {product.stock === 0 && (
+          <p className="text-xs text-red-600 font-medium mt-1">Currently unavailable</p>
+        )}
       </div>
     </div>
   );

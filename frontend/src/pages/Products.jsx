@@ -53,9 +53,7 @@ export default function Products() {
     setSearchParams(params);
   };
 
-  const clearFilters = () => {
-    setSearchParams({});
-  };
+  const clearFilters = () => setSearchParams({});
 
   const goToPage = (p) => {
     const params = new URLSearchParams(searchParams);
@@ -67,95 +65,108 @@ export default function Products() {
   const hasFilters = category || sort || minPrice || maxPrice;
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="max-w-screen-amazon mx-auto px-4 py-4">
+      {/* Results Header */}
+      <div className="bg-white px-4 py-3 mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            {search ? `Results for "${search}"` : "All Products"}
+          <h1 className="text-lg font-bold text-amazon-text">
+            {search ? `Results for "${search}"` : category || "All Products"}
           </h1>
-          <p className="text-gray-500 mt-1">{pagination.total} products found</p>
+          <p className="text-sm text-amazon-text-secondary">{pagination.total.toLocaleString("en-IN")} results</p>
         </div>
         <div className="flex items-center gap-3">
+          <span className="text-sm text-amazon-text-secondary">Sort by:</span>
           <select
             value={sort}
             onChange={(e) => updateFilter("sort", e.target.value)}
-            className="input-field !w-auto text-sm !py-2"
+            className="input-field !w-auto text-sm !py-1.5"
           >
             <option value="">Newest</option>
             <option value="price_asc">Price: Low to High</option>
             <option value="price_desc">Price: High to Low</option>
-            <option value="rating">Top Rated</option>
+            <option value="rating">Avg. Customer Review</option>
             <option value="name">Name A-Z</option>
           </select>
-          <button onClick={() => setFiltersOpen(!filtersOpen)} className="btn-secondary !py-2 flex items-center gap-2 text-sm lg:hidden">
+          <button onClick={() => setFiltersOpen(!filtersOpen)} className="btn-secondary !py-1.5 flex items-center gap-2 text-sm lg:hidden">
             <SlidersHorizontal className="h-4 w-4" />
             Filters
           </button>
         </div>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex gap-4">
         {/* Sidebar Filters */}
-        <aside className={`${filtersOpen ? "fixed inset-0 z-50 bg-black/50 lg:relative lg:bg-transparent" : "hidden"} lg:block lg:w-64 flex-shrink-0`}>
-          <div className={`${filtersOpen ? "fixed right-0 top-0 h-full w-80 bg-white p-6 shadow-xl overflow-y-auto" : ""} lg:relative lg:w-auto lg:p-0 lg:shadow-none`}>
+        <aside className={`${filtersOpen ? "fixed inset-0 z-50 bg-black/50 lg:relative lg:bg-transparent" : "hidden"} lg:block lg:w-56 flex-shrink-0`}>
+          <div className={`${filtersOpen ? "fixed left-0 top-0 h-full w-72 bg-white p-4 shadow-xl overflow-y-auto" : ""} lg:relative lg:w-auto lg:p-0 lg:shadow-none`}>
             {filtersOpen && (
-              <div className="flex items-center justify-between mb-6 lg:hidden">
-                <h2 className="text-lg font-semibold">Filters</h2>
+              <div className="flex items-center justify-between mb-4 lg:hidden">
+                <h2 className="text-lg font-bold">Filters</h2>
                 <button onClick={() => setFiltersOpen(false)}><X className="h-5 w-5" /></button>
               </div>
             )}
 
-            <div className="space-y-6">
-              {/* Category Filter */}
+            <div className="bg-white p-4 space-y-5">
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Category</h3>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => { updateFilter("category", ""); setFiltersOpen(false); }}
-                    className={`block w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${!category ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-50"}`}
-                  >
-                    All Categories
-                  </button>
-                  {categories.map((cat) => (
+                <h3 className="text-sm font-bold text-amazon-text mb-2">Category</h3>
+                <ul className="space-y-1">
+                  <li>
                     <button
-                      key={cat}
-                      onClick={() => { updateFilter("category", cat); setFiltersOpen(false); }}
-                      className={`block w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${category === cat ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-50"}`}
+                      onClick={() => { updateFilter("category", ""); setFiltersOpen(false); }}
+                      className={`text-sm w-full text-left py-0.5 ${!category ? "font-bold text-amazon-text" : "text-amazon-text-secondary hover:text-amazon-link"}`}
                     >
-                      {cat}
+                      All Categories
+                    </button>
+                  </li>
+                  {categories.map((cat) => (
+                    <li key={cat}>
+                      <button
+                        onClick={() => { updateFilter("category", cat); setFiltersOpen(false); }}
+                        className={`text-sm w-full text-left py-0.5 ${category === cat ? "font-bold text-amazon-text" : "text-amazon-text-secondary hover:text-amazon-link"}`}
+                      >
+                        {cat}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-bold text-amazon-text mb-2">Price</h3>
+                <div className="space-y-1">
+                  {[
+                    { label: "Under \u20B91,000", min: "", max: "1000" },
+                    { label: "\u20B91,000 - \u20B95,000", min: "1000", max: "5000" },
+                    { label: "\u20B95,000 - \u20B910,000", min: "5000", max: "10000" },
+                    { label: "\u20B910,000 - \u20B925,000", min: "10000", max: "25000" },
+                    { label: "Over \u20B925,000", min: "25000", max: "" },
+                  ].map((range) => (
+                    <button
+                      key={range.label}
+                      onClick={() => {
+                        const params = new URLSearchParams(searchParams);
+                        if (range.min) params.set("min_price", range.min); else params.delete("min_price");
+                        if (range.max) params.set("max_price", range.max); else params.delete("max_price");
+                        params.delete("page");
+                        setSearchParams(params);
+                        setFiltersOpen(false);
+                      }}
+                      className={`text-sm w-full text-left py-0.5 ${
+                        minPrice === range.min && maxPrice === range.max ? "font-bold text-amazon-text" : "text-amazon-text-secondary hover:text-amazon-link"
+                      }`}
+                    >
+                      {range.label}
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Price Filter */}
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Price Range</h3>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    placeholder="Min"
-                    value={minPrice}
-                    onChange={(e) => updateFilter("min_price", e.target.value)}
-                    className="input-field text-sm !py-2"
-                    min="0"
-                  />
-                  <span className="text-gray-400">-</span>
-                  <input
-                    type="number"
-                    placeholder="Max"
-                    value={maxPrice}
-                    onChange={(e) => updateFilter("max_price", e.target.value)}
-                    className="input-field text-sm !py-2"
-                    min="0"
-                  />
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="number" placeholder="Min" value={minPrice} onChange={(e) => updateFilter("min_price", e.target.value)} className="input-field text-xs !py-1 w-20" min="0" />
+                  <span className="text-gray-400 text-xs">to</span>
+                  <input type="number" placeholder="Max" value={maxPrice} onChange={(e) => updateFilter("max_price", e.target.value)} className="input-field text-xs !py-1 w-20" min="0" />
                 </div>
               </div>
 
-              {/* Clear Filters */}
               {hasFilters && (
-                <button onClick={() => { clearFilters(); setFiltersOpen(false); }} className="text-sm text-red-600 hover:text-red-700 font-medium">
+                <button onClick={() => { clearFilters(); setFiltersOpen(false); }} className="text-sm text-amazon-link hover:text-amazon-link-hover">
                   Clear all filters
                 </button>
               )}
@@ -164,58 +175,64 @@ export default function Products() {
         </aside>
 
         {/* Product Grid */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border animate-pulse">
-                  <div className="aspect-square bg-gray-200"></div>
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-                    <div className="h-5 bg-gray-200 rounded w-2/3"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                  </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-gray-200">
+              {[...Array(10)].map((_, i) => (
+                <div key={i} className="bg-white p-4 animate-pulse">
+                  <div className="aspect-square bg-gray-200 mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-5 bg-gray-200 rounded w-1/3"></div>
                 </div>
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-xl text-gray-500">No products found</p>
+            <div className="bg-white text-center py-16 px-4">
+              <p className="text-lg text-amazon-text-secondary">No results found</p>
               <button onClick={clearFilters} className="mt-4 btn-primary">Clear Filters</button>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-px bg-gray-200">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
 
-              {/* Pagination */}
               {pagination.pages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-10">
+                <div className="flex items-center justify-center gap-1 mt-6 mb-4">
                   <button
                     onClick={() => goToPage(pagination.page - 1)}
                     disabled={pagination.page === 1}
-                    className="btn-secondary !px-3 !py-2 disabled:opacity-50"
+                    className="px-4 py-2 border border-gray-300 rounded-l-lg text-sm text-amazon-text bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    Previous
                   </button>
-                  {[...Array(pagination.pages)].map((_, i) => (
-                    <button
-                      key={i + 1}
-                      onClick={() => goToPage(i + 1)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${pagination.page === i + 1 ? "bg-indigo-600 text-white" : "text-gray-700 hover:bg-gray-100"}`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
+                  {[...Array(Math.min(pagination.pages, 7))].map((_, i) => {
+                    let pageNum;
+                    if (pagination.pages <= 7) pageNum = i + 1;
+                    else if (pagination.page <= 4) pageNum = i + 1;
+                    else if (pagination.page >= pagination.pages - 3) pageNum = pagination.pages - 6 + i;
+                    else pageNum = pagination.page - 3 + i;
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => goToPage(pageNum)}
+                        className={`px-4 py-2 border text-sm ${
+                          pagination.page === pageNum ? "bg-amazon-yellow border-amazon-orange font-bold" : "bg-white border-gray-300 text-amazon-text hover:bg-gray-50"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
                   <button
                     onClick={() => goToPage(pagination.page + 1)}
                     disabled={pagination.page === pagination.pages}
-                    className="btn-secondary !px-3 !py-2 disabled:opacity-50"
+                    className="px-4 py-2 border border-gray-300 rounded-r-lg text-sm text-amazon-text bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    Next
                   </button>
                 </div>
               )}

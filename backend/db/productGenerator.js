@@ -13,32 +13,152 @@ function pick(arr, rand) {
   return arr[Math.floor(rand() * arr.length)];
 }
 
-const images = {
-  "Mobiles": ["photo-1511707171634-5f897ff02aa9", "photo-1598327105666-5b89351aff97", "photo-1592899677977-9c10ca588bbd", "photo-1610945265064-0e34e5519bbf", "photo-1695048133142-1a20484d2569", "photo-1544244015-0df4b3ffc6b0"],
-  "Laptops": ["photo-1517336714731-489689fd1ca8", "photo-1496181133206-80ce9b88a853", "photo-1588872657578-7efd1f1555ed", "photo-1593642632559-0c6d3fc62b89", "photo-1603302576837-37561b2e2302", "photo-1625842268584-8f3296236761"],
-  "Electronics": ["photo-1505740420928-5e560c06d30e", "photo-1590658268037-6bf12f032f55", "photo-1608043152269-423dbba4e7e1", "photo-1523275335684-37898b6baf30", "photo-1511467687858-23d96c32e4ae", "photo-1516035069371-29a1b244cc32", "photo-1593359677879-a4bb92f829d1", "photo-1578303512597-81e6cc155b3e"],
-  "Men's Clothing": ["photo-1542272454315-4c01d7abdf4a", "photo-1596755094514-f87e34085b2c", "photo-1576995853123-5a10305d93c0", "photo-1521572163474-6864f9cf17ab", "photo-1618354691373-d851c5c3a990"],
-  "Women's Clothing": ["photo-1572804013309-59a88b7e92f1", "photo-1576566588028-4147f3842f27", "photo-1506629082955-511b1aa562c8", "photo-1515886657613-9f3515b0c78f", "photo-1594938298603-c8148c4dae35"],
-  "Men's Footwear": ["photo-1542291026-7eec264c27ff", "photo-1556906781-9a412961c28c", "photo-1525966222134-fcfa99b8ae77", "photo-1460353581641-37baddab0fa2"],
-  "Women's Footwear": ["photo-1595950653106-6c9ebd614d3a", "photo-1543163521-1bf539c55dd2", "photo-1518894781321-630e0d5046be"],
-  "Home & Kitchen": ["photo-1585659722983-3a675dabf23d", "photo-1517668808822-9ebb02f2a0e6", "photo-1594631252845-29fc4cc8cde9", "photo-1556909114-f6e7ad7d3136", "photo-1507473885765-e6ed057ab6fe", "photo-1631049307264-da0ec9d70304", "photo-1602607646949-82e869ffd4cf"],
-  "Beauty": ["photo-1522338242992-e1a54571a9f7", "photo-1556228578-0d85b1a4d571", "photo-1620916566398-39f1143ab7be", "photo-1541643600914-78b084683601", "photo-1596462502278-27bfdc403348"],
-  "Sports & Fitness": ["photo-1601925260368-ae2f83cf8b7f", "photo-1534438327276-14e5300c3a48", "photo-1575311373937-040b8e1fd5b6", "photo-1598289431512-b97b0917affc", "photo-1602143407151-7111542de6e8"],
-  "Books": ["photo-1544947950-fa07a98d237f", "photo-1512820790803-83ca734da794", "photo-1543002588-bfa74002ed7e", "photo-1524578271613-d550eacf6090", "photo-1497633762265-9d179a990aa6"],
-  "Grocery": ["photo-1556679343-c7306c1976bc", "photo-1599599810769-bcde5a160d32", "photo-1474979266404-7eaacbcd87c5", "photo-1549007994-cb92caebd54b"],
-  "Toys & Games": ["photo-1587654780291-39c9404d7dd0", "photo-1632501641765-e568d28b0015", "photo-1507582020474-9a35b7d455d9", "photo-1494059980473-813e73ee784b"],
-  "Bags & Luggage": ["photo-1553062407-98eeb64c6a62", "photo-1548036328-c9fa89d128fa", "photo-1622560480654-996b3a2549e1"],
-  "Watches": ["photo-1524805444758-089113d48a6d", "photo-1533139502658-0198f920d8e8", "photo-1522312346375-d1a52e2b99b8"],
-  "Furniture": ["photo-1555041469-a586c61ea9bc", "photo-1506439773649-6e0eb8cfb237", "photo-1580480055273-228ff5388ef8", "photo-1518455027359-f3f8164ba6bd"],
-  "Baby & Kids": ["photo-1515488042361-ee00e0ddd4e4", "photo-1519689680058-324335c77eba", "photo-1596461404969-9ae70f2830c1"],
-  "Health & Wellness": ["photo-1559591937-dbc8f4b7b8e3", "photo-1556228578-0d85b1a4d571", "photo-1587854692152-cbe660dbde88"],
-  "Jewelry": ["photo-1599643478518-a784e5dc4c8f", "photo-1535632066927-ab7c9ab60908", "photo-1605100804763-247f67b3557e"],
-  "Office": ["photo-1580480055273-228ff5388ef8", "photo-1518455027359-f3f8164ba6bd", "photo-1531346878377-a5be20888e57", "photo-1587826080692-f439cd0b70da"],
+// Per product-type images — each product type gets its own relevant product photos
+const typeImages = {
+  // MOBILES
+  "5G Smartphone": ["photo-1511707171634-5f897ff02aa9", "photo-1598327105666-5b89351aff97", "photo-1592899677977-9c10ca588bbd", "photo-1610945265064-0e34e5519bbf", "photo-1585060544812-6b45742d762f", "photo-1601784551446-20c9e07cdbdb"],
+  "4G Smartphone": ["photo-1511707171634-5f897ff02aa9", "photo-1598327105666-5b89351aff97", "photo-1592899677977-9c10ca588bbd", "photo-1610945265064-0e34e5519bbf", "photo-1585060544812-6b45742d762f", "photo-1601784551446-20c9e07cdbdb"],
+  "Tablet": ["photo-1544244015-0df4b3ffc6b0", "photo-1561154464-82e9adf32764", "photo-1585790050230-5dd28404ccb9", "photo-1632882765546-1ee75f53becb", "photo-1589739900243-4b52cd9b104e"],
+  // LAPTOPS
+  "Gaming Laptop": ["photo-1593642632559-0c6d3fc62b89", "photo-1603302576837-37561b2e2302", "photo-1625842268584-8f3296236761", "photo-1588872657578-7efd1f1555ed", "photo-1612815154858-60aa4c59eaa6"],
+  "Ultrabook": ["photo-1517336714731-489689fd1ca8", "photo-1496181133206-80ce9b88a853", "photo-1541807084-5c52b6b49c0d", "photo-1611186871348-b1ce696e52c9", "photo-1525547719571-a2d4ac8945e2"],
+  "Business Laptop": ["photo-1517336714731-489689fd1ca8", "photo-1496181133206-80ce9b88a853", "photo-1525547719571-a2d4ac8945e2", "photo-1588872657578-7efd1f1555ed"],
+  "Budget Laptop": ["photo-1496181133206-80ce9b88a853", "photo-1517336714731-489689fd1ca8", "photo-1525547719571-a2d4ac8945e2", "photo-1588872657578-7efd1f1555ed"],
+  // ELECTRONICS
+  "Wireless Headphones": ["photo-1505740420928-5e560c06d30e", "photo-1583394838336-acd977736f90", "photo-1546435770-a3e426bf472b", "photo-1484704849700-f032a568e944", "photo-1524678606370-a47ad25cb82a"],
+  "TWS Earbuds": ["photo-1590658268037-6bf12f032f55", "photo-1606220588913-b3aacb4d2f46", "photo-1631176093617-63490a3d785a", "photo-1572569511254-d8f925fe2cbb", "photo-1598331668826-20cecc596b86"],
+  "Bluetooth Speaker": ["photo-1608043152269-423dbba4e7e1", "photo-1558537348-c0f8e733989d", "photo-1589003077984-894e133dabab", "photo-1545454675-3531b543be5d"],
+  "Smart TV": ["photo-1593359677879-a4bb92f829d1", "photo-1593784991095-a205069470b6", "photo-1461151304267-38535e780c79", "photo-1509281373149-e957c6296406"],
+  "Smartwatch": ["photo-1523275335684-37898b6baf30", "photo-1579586337278-3befd40fd17a", "photo-1508685096489-7aacd43bd3b1", "photo-1434493789847-2f02dc6ca35d", "photo-1617043786394-f977fa12eddf"],
+  "Camera": ["photo-1516035069371-29a1b244cc32", "photo-1502920917128-1aa500764cbd", "photo-1516724562728-afc824a36e84", "photo-1495707902641-75cac588d2e8"],
+  "Power Bank": ["photo-1609091839311-d5365f9ff1c5", "photo-1585338447937-7082f8fc763d", "photo-1626018109091-cb28cae86e0f"],
+  // MEN'S CLOTHING
+  "Formal Shirt": ["photo-1596755094514-f87e34085b2c", "photo-1602810318383-e386cc2a3ccf", "photo-1620012253295-c15cc3e65df4", "photo-1603252109303-2751441dd157", "photo-1598033129183-c4f50c736c10"],
+  "Casual T-Shirt": ["photo-1521572163474-6864f9cf17ab", "photo-1618354691373-d851c5c3a990", "photo-1581655353564-df123a1eb820", "photo-1576566588028-4147f3842f27", "photo-1583743814966-8936f5b7be1a"],
+  "Jeans": ["photo-1542272454315-4c01d7abdf4a", "photo-1541099649105-f69ad21f3246", "photo-1604176354204-9268737828e4", "photo-1582552938357-32b906df40cb"],
+  "Formal Trousers": ["photo-1594938298603-c8148c4dae35", "photo-1473966968600-fa801b869a1a", "photo-1594938298603-c8148c4dae35"],
+  "Jacket": ["photo-1551028719-00167b16eac5", "photo-1591047139829-d91aecb6caea", "photo-1548883354-94bcfe321cbb", "photo-1576995853123-5a10305d93c0"],
+  "Kurta": ["photo-1610030469983-98e550d6193c", "photo-1604228553993-5c0e0a9a0f05", "photo-1583391733956-3750e0ff4e8b"],
+  // WOMEN'S CLOTHING
+  "Kurti": ["photo-1572804013309-59a88b7e92f1", "photo-1583391733956-3750e0ff4e8b", "photo-1610030469983-98e550d6193c", "photo-1594938298603-c8148c4dae35"],
+  "Saree": ["photo-1610030469983-98e550d6193c", "photo-1583391733956-3750e0ff4e8b", "photo-1515886657613-9f3515b0c78f"],
+  "Western Dress": ["photo-1572804013309-59a88b7e92f1", "photo-1515886657613-9f3515b0c78f", "photo-1496747611176-843222e1e57c", "photo-1595777457583-95e059d581b8"],
+  "Top": ["photo-1576566588028-4147f3842f27", "photo-1618354691373-d851c5c3a990", "photo-1581655353564-df123a1eb820", "photo-1506629082955-511b1aa562c8"],
+  "Leggings": ["photo-1506629082955-511b1aa562c8", "photo-1594938298603-c8148c4dae35", "photo-1572804013309-59a88b7e92f1"],
+  "Salwar Suit Set": ["photo-1583391733956-3750e0ff4e8b", "photo-1610030469983-98e550d6193c", "photo-1515886657613-9f3515b0c78f"],
+  // MEN'S FOOTWEAR
+  "Running Shoes": ["photo-1542291026-7eec264c27ff", "photo-1556906781-9a412961c28c", "photo-1525966222134-fcfa99b8ae77", "photo-1460353581641-37baddab0fa2", "photo-1539185441755-769473a23570", "photo-1606107557195-0e29a4b5b4aa"],
+  "Casual Sneakers": ["photo-1525966222134-fcfa99b8ae77", "photo-1549298916-b41d501d3772", "photo-1560769629-975ec94e6a86", "photo-1543508282-6319a3e2621f"],
+  "Formal Shoes": ["photo-1533867617858-e7b97e060509", "photo-1614252235316-8c857d38b5f4", "photo-1449505278894-297fdb3edbc1", "photo-1608256246200-53e635b5b65f"],
+  "Sandals": ["photo-1603487742131-4160ec999306", "photo-1562273138-f46be4ebdf33", "photo-1535043934128-cf0b28d52f95"],
+  // WOMEN'S FOOTWEAR
+  "Sneakers": ["photo-1595950653106-6c9ebd614d3a", "photo-1560769629-975ec94e6a86", "photo-1543163521-1bf539c55dd2", "photo-1539185441755-769473a23570"],
+  "Heels": ["photo-1543163521-1bf539c55dd2", "photo-1518894781321-630e0d5046be", "photo-1596703263926-eb0762ee17e4"],
+  "Flats": ["photo-1543163521-1bf539c55dd2", "photo-1518894781321-630e0d5046be", "photo-1595950653106-6c9ebd614d3a"],
+  // HOME & KITCHEN
+  "Mixer Grinder": ["photo-1585659722983-3a675dabf23d", "photo-1556909114-f6e7ad7d3136", "photo-1570222094114-d054a817e56b", "photo-1631049307264-da0ec9d70304"],
+  "Water Purifier": ["photo-1585659722983-3a675dabf23d", "photo-1556909114-f6e7ad7d3136", "photo-1631049307264-da0ec9d70304"],
+  "Air Conditioner": ["photo-1585659722983-3a675dabf23d", "photo-1631049307264-da0ec9d70304", "photo-1556909114-f6e7ad7d3136"],
+  "Refrigerator": ["photo-1571175443880-49e1d25b2bc5", "photo-1584568694244-14fbdf83bd30", "photo-1536353284924-9220c464e262"],
+  "Washing Machine": ["photo-1626806787461-102c1bfaaea1", "photo-1585659722983-3a675dabf23d", "photo-1631049307264-da0ec9d70304"],
+  "Bedsheet Set": ["photo-1517668808822-9ebb02f2a0e6", "photo-1522771739844-6a9f6d5f14af", "photo-1616046229478-9901c5536a45"],
+  "Cookware Set": ["photo-1556909114-f6e7ad7d3136", "photo-1594631252845-29fc4cc8cde9", "photo-1585659722983-3a675dabf23d", "photo-1585515320310-259814833e62"],
+  "LED Bulb Pack": ["photo-1507473885765-e6ed057ab6fe", "photo-1631049307264-da0ec9d70304"],
+  // BEAUTY
+  "Face Serum": ["photo-1620916566398-39f1143ab7be", "photo-1556228578-0d85b1a4d571", "photo-1596462502278-27bfdc403348", "photo-1608248543803-ba4f8c70ae0b"],
+  "Sunscreen": ["photo-1556228578-0d85b1a4d571", "photo-1620916566398-39f1143ab7be", "photo-1596462502278-27bfdc403348"],
+  "Lipstick": ["photo-1522338242992-e1a54571a9f7", "photo-1596462502278-27bfdc403348", "photo-1586495777744-4413f21062fa", "photo-1631214500115-598fc2cb8ada"],
+  "Hair Oil": ["photo-1556228578-0d85b1a4d571", "photo-1608248543803-ba4f8c70ae0b", "photo-1620916566398-39f1143ab7be"],
+  "Shampoo": ["photo-1556228578-0d85b1a4d571", "photo-1608248543803-ba4f8c70ae0b", "photo-1620916566398-39f1143ab7be"],
+  "Perfume": ["photo-1541643600914-78b084683601", "photo-1523293182086-7651a899d37f", "photo-1594035910387-fea081d36ee9", "photo-1588405748880-12d1d2a59f75"],
+  // SPORTS & FITNESS
+  "Cricket Bat": ["photo-1624526267942-ab0ff8a3e972", "photo-1531415074968-036ba1b575da", "photo-1540747913346-19e32dc3e97e"],
+  "Yoga Mat": ["photo-1601925260368-ae2f83cf8b7f", "photo-1575311373937-040b8e1fd5b6", "photo-1592432678016-e910b452f9a2"],
+  "Dumbbell Set": ["photo-1534438327276-14e5300c3a48", "photo-1598289431512-b97b0917affc", "photo-1583454110551-21f2fa2afe61"],
+  "Resistance Band Set": ["photo-1598289431512-b97b0917affc", "photo-1601925260368-ae2f83cf8b7f", "photo-1534438327276-14e5300c3a48"],
+  "Treadmill": ["photo-1534438327276-14e5300c3a48", "photo-1576678927484-cc907957088c", "photo-1540497077202-7c8a3999166f"],
+  "Football": ["photo-1602143407151-7111542de6e8", "photo-1575361204480-aadea25e6e68", "photo-1552318965-6e6be7484ada"],
+  // BOOKS
+  "Self-Help Book": ["photo-1544947950-fa07a98d237f", "photo-1512820790803-83ca734da794", "photo-1543002588-bfa74002ed7e", "photo-1497633762265-9d179a990aa6"],
+  "Fiction Novel": ["photo-1544947950-fa07a98d237f", "photo-1512820790803-83ca734da794", "photo-1543002588-bfa74002ed7e", "photo-1524578271613-d550eacf6090"],
+  "Competitive Exam Book": ["photo-1497633762265-9d179a990aa6", "photo-1543002588-bfa74002ed7e", "photo-1544947950-fa07a98d237f"],
+  "Children's Book": ["photo-1544947950-fa07a98d237f", "photo-1512820790803-83ca734da794", "photo-1524578271613-d550eacf6090"],
+  "Business & Finance Book": ["photo-1543002588-bfa74002ed7e", "photo-1497633762265-9d179a990aa6", "photo-1544947950-fa07a98d237f"],
+  // GROCERY
+  "Cooking Oil": ["photo-1474979266404-7eaacbcd87c5", "photo-1556679343-c7306c1976bc", "photo-1599599810769-bcde5a160d32"],
+  "Atta (Wheat Flour)": ["photo-1556679343-c7306c1976bc", "photo-1574323347407-f5e1ad6d020b", "photo-1599599810769-bcde5a160d32"],
+  "Rice": ["photo-1586201375761-83865001e31c", "photo-1556679343-c7306c1976bc", "photo-1574323347407-f5e1ad6d020b"],
+  "Tea": ["photo-1556679343-c7306c1976bc", "photo-1564890369478-c89ca6d9cde9", "photo-1597318181409-cf64d0b5d468"],
+  "Dry Fruits & Nuts": ["photo-1549007994-cb92caebd54b", "photo-1599599810769-bcde5a160d32", "photo-1556679343-c7306c1976bc"],
+  "Chocolate": ["photo-1549007994-cb92caebd54b", "photo-1599599810769-bcde5a160d32", "photo-1587132137056-bfbf0166836e"],
+  "Ghee": ["photo-1556679343-c7306c1976bc", "photo-1599599810769-bcde5a160d32", "photo-1574323347407-f5e1ad6d020b"],
+  // TOYS & GAMES
+  "Building Blocks Set": ["photo-1587654780291-39c9404d7dd0", "photo-1632501641765-e568d28b0015", "photo-1596461404969-9ae70f2830c1"],
+  "Board Game": ["photo-1507582020474-9a35b7d455d9", "photo-1632501641765-e568d28b0015", "photo-1587654780291-39c9404d7dd0"],
+  "Remote Control Car": ["photo-1494059980473-813e73ee784b", "photo-1587654780291-39c9404d7dd0", "photo-1596461404969-9ae70f2830c1"],
+  "Educational Toy": ["photo-1632501641765-e568d28b0015", "photo-1587654780291-39c9404d7dd0", "photo-1507582020474-9a35b7d455d9"],
+  "Action Figure": ["photo-1494059980473-813e73ee784b", "photo-1596461404969-9ae70f2830c1", "photo-1587654780291-39c9404d7dd0"],
+  "Puzzle": ["photo-1507582020474-9a35b7d455d9", "photo-1632501641765-e568d28b0015", "photo-1587654780291-39c9404d7dd0"],
+  // BAGS & LUGGAGE
+  "Backpack": ["photo-1553062407-98eeb64c6a62", "photo-1622560480654-996b3a2549e1", "photo-1581605405669-fcdf81165b39", "photo-1546938576-6e6a64f317cc"],
+  "Trolley Bag": ["photo-1548036328-c9fa89d128fa", "photo-1565026057447-bc90a3dceb87", "photo-1581605405669-fcdf81165b39"],
+  "Handbag": ["photo-1548036328-c9fa89d128fa", "photo-1553062407-98eeb64c6a62", "photo-1622560480654-996b3a2549e1", "photo-1584917865442-de89df76afd3"],
+  // WATCHES
+  "Analog Watch": ["photo-1524805444758-089113d48a6d", "photo-1533139502658-0198f920d8e8", "photo-1522312346375-d1a52e2b99b8", "photo-1542496658-e33a6d0d50f6", "photo-1539874754764-5a96559165b0"],
+  "Smartwatch": ["photo-1579586337278-3befd40fd17a", "photo-1508685096489-7aacd43bd3b1", "photo-1617043786394-f977fa12eddf", "photo-1434493789847-2f02dc6ca35d"],
+  "Digital Watch": ["photo-1533139502658-0198f920d8e8", "photo-1524805444758-089113d48a6d", "photo-1522312346375-d1a52e2b99b8"],
+  // FURNITURE
+  "Office Chair": ["photo-1580480055273-228ff5388ef8", "photo-1506439773649-6e0eb8cfb237", "photo-1596079890744-c1a0462d0975", "photo-1589364157913-c0faf8539082"],
+  "Study Table": ["photo-1518455027359-f3f8164ba6bd", "photo-1611269154421-4e27233ac5c7", "photo-1555041469-a586c61ea9bc"],
+  "Mattress": ["photo-1505693416388-ac5ce068fe85", "photo-1631049552240-59c37f38802b", "photo-1555041469-a586c61ea9bc"],
+  "Bookshelf": ["photo-1555041469-a586c61ea9bc", "photo-1506439773649-6e0eb8cfb237", "photo-1580480055273-228ff5388ef8"],
+  "Sofa": ["photo-1555041469-a586c61ea9bc", "photo-1506439773649-6e0eb8cfb237", "photo-1493663284031-b7e3aefcae8e"],
+  // BABY & KIDS — actual product-focused images instead of lifestyle baby photos
+  "Diapers": ["photo-1594824476967-48c8b964273f", "photo-1584839404042-8bc29dae09e0", "photo-1604917621956-10dfa7cce2e5"],
+  "Baby Clothing Set": ["photo-1522771930-78b353280e44", "photo-1604917621956-10dfa7cce2e5", "photo-1594824476967-48c8b964273f"],
+  "Stroller": ["photo-1607438375773-b2c79a62ed96", "photo-1604917621956-10dfa7cce2e5", "photo-1594824476967-48c8b964273f"],
+  "Baby Care Kit": ["photo-1604917621956-10dfa7cce2e5", "photo-1594824476967-48c8b964273f", "photo-1584839404042-8bc29dae09e0"],
+  // HEALTH & WELLNESS
+  "Face Serum_hw": ["photo-1559591937-dbc8f4b7b8e3", "photo-1587854692152-cbe660dbde88", "photo-1556228578-0d85b1a4d571"],
+  // JEWELRY
+  "Ring": ["photo-1599643478518-a784e5dc4c8f", "photo-1535632066927-ab7c9ab60908", "photo-1605100804763-247f67b3557e", "photo-1603561596112-0a132b757442"],
+  "Necklace Set": ["photo-1599643478518-a784e5dc4c8f", "photo-1535632066927-ab7c9ab60908", "photo-1611591437281-460bfbe1220a"],
+  "Earrings": ["photo-1535632066927-ab7c9ab60908", "photo-1605100804763-247f67b3557e", "photo-1599643478518-a784e5dc4c8f"],
+  "Bangle Set": ["photo-1611591437281-460bfbe1220a", "photo-1599643478518-a784e5dc4c8f", "photo-1535632066927-ab7c9ab60908"],
+  // OFFICE
+  "Printer": ["photo-1580480055273-228ff5388ef8", "photo-1612815154858-60aa4c59eaa6", "photo-1587826080692-f439cd0b70da"],
+  "Stationery Set": ["photo-1531346878377-a5be20888e57", "photo-1587826080692-f439cd0b70da", "photo-1580480055273-228ff5388ef8"],
+  "Webcam": ["photo-1580480055273-228ff5388ef8", "photo-1587826080692-f439cd0b70da", "photo-1612815154858-60aa4c59eaa6"],
+  "Desk Organizer": ["photo-1531346878377-a5be20888e57", "photo-1518455027359-f3f8164ba6bd", "photo-1587826080692-f439cd0b70da"],
+  // FALLBACK
+  "_default": ["photo-1523275335684-37898b6baf30", "photo-1505740420928-5e560c06d30e", "photo-1556228578-0d85b1a4d571"],
 };
 
-function getImage(category, index) {
-  const pool = images[category] || images["Electronics"];
-  return `https://images.unsplash.com/${pool[index % pool.length]}?w=500`;
+// Crop variations for Unsplash imgix — multiplies visual diversity from same base photos
+const cropVariations = [
+  "", "crop=entropy&", "crop=top&", "crop=left&", "crop=right&",
+  "crop=focalpoint&fp-x=0.35&fp-y=0.4&", "crop=focalpoint&fp-x=0.65&fp-y=0.6&",
+  "crop=focalpoint&fp-x=0.3&fp-y=0.65&", "crop=focalpoint&fp-x=0.65&fp-y=0.35&",
+];
+
+let categoryPools = null;
+
+function getImage(typeName, categoryName, productId) {
+  // Lazily build category pools (combines all type images within each category for max variety)
+  if (!categoryPools) {
+    categoryPools = {};
+    for (const cat of catalog) {
+      const all = new Set();
+      for (const type of cat.types) {
+        (typeImages[type.name] || typeImages["_default"]).forEach(img => all.add(img));
+      }
+      categoryPools[cat.category] = [...all];
+    }
+  }
+  const pool = categoryPools[categoryName] || typeImages[typeName] || typeImages["_default"];
+  const photoId = pool[productId % pool.length];
+  const cropVar = cropVariations[Math.floor(productId / pool.length) % cropVariations.length];
+  return `https://images.unsplash.com/${photoId}?w=400&h=400&fit=crop&${cropVar}auto=format&q=80`;
 }
 
 const catalog = [
@@ -451,6 +571,10 @@ export function generateAllProducts() {
               const priceRand = seededRandom(id * 1301);
               const price = Math.round((type.priceBase + priceRand() * (type.priceMax - type.priceBase)) / 10) * 10 - 1;
 
+              const discountRand = seededRandom(id * 2203);
+              const discount = Math.floor(5 + discountRand() * 65);
+              const mrp = Math.round(price / (1 - discount / 100) / 10) * 10 - 1;
+
               const ratingRand = seededRandom(id * 4253);
               const rating = Math.round((3.2 + ratingRand() * 1.8) * 10) / 10;
 
@@ -461,13 +585,12 @@ export function generateAllProducts() {
                 brand, type: type.name, adjective: adj, storage, color,
               });
 
-              const imgRand = seededRandom(id * 3301);
-              const image = getImage(cat.category, Math.floor(imgRand() * 100));
+              const image = getImage(type.name, cat.category, id);
 
               const description = `${brand} ${adj} ${type.name}${storage ? ` (${storage})` : ""}${color ? ` in ${color}` : ""}. ${Object.entries(specs).slice(0, 4).map(([k, v]) => `${k}: ${v}`).join(". ")}. Genuine product with manufacturer warranty. Fast delivery across India.`;
 
               products.push({
-                id, name, description, price, image,
+                id, name, description, price, mrp, discount, image,
                 category: cat.category, stock, rating, specs,
                 created_at: new Date(Date.now() - id * 60000).toISOString(),
               });
