@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, MapPin, Menu, X, Search, ChevronDown } from "lucide-react";
+import { ShoppingCart, User, Search, Menu, X, ChevronDown, LogOut, Package } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+
+const NAV_CATEGORIES = [
+  "Mobiles", "Electronics", "Laptops", "Men's Clothing", "Women's Clothing",
+  "Home & Kitchen", "Beauty", "Books", "Grocery", "Toys & Games",
+  "Sports & Fitness", "Watches", "Footwear",
+];
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -10,8 +16,9 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [categories, setCategories] = useState([]);
   const [searchCategory, setSearchCategory] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/products/categories")
@@ -34,112 +41,155 @@ export default function Navbar() {
     logout();
     navigate("/");
     setMobileOpen(false);
+    setAccountOpen(false);
   };
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Main Header Bar */}
-      <nav className="bg-amazon text-white">
-        <div className="max-w-screen-amazon mx-auto px-4 flex items-center h-[60px] gap-2 sm:gap-4">
-          {/* Logo */}
-          <Link to="/" className="flex-shrink-0 px-2 py-1 border border-transparent hover:border-white rounded">
-            <span className="text-xl font-bold tracking-tight">Shop<span className="text-amazon-orange">Hub</span></span>
-            <span className="text-[10px] text-gray-300 block leading-none">.in</span>
-          </Link>
+      {/* Main Header */}
+      <nav className="bg-white border-b border-gray-100 shadow-sm">
+        <div className="max-w-screen-amazon mx-auto px-4 flex items-center h-16 gap-3 sm:gap-5">
 
-          {/* Deliver To */}
-          <Link to="/products" className="hidden lg:flex items-end gap-1 px-2 py-1 border border-transparent hover:border-white rounded flex-shrink-0">
-            <MapPin className="h-5 w-5 text-white mb-0.5" />
-            <div>
-              <span className="text-xs text-gray-300 block leading-none">Deliver to</span>
-              <span className="text-sm font-bold leading-tight">India</span>
-            </div>
+          {/* Logo */}
+          <Link to="/" className="flex-shrink-0 flex items-center gap-0.5">
+            <span className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent leading-none">
+              Shop
+            </span>
+            <span className="text-2xl font-black text-gray-900 leading-none">Hub</span>
           </Link>
 
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-1 flex h-[40px] min-w-0">
-            <select
-              value={searchCategory}
-              onChange={(e) => setSearchCategory(e.target.value)}
-              className="hidden sm:block bg-gray-100 text-amazon-text text-xs px-2 rounded-l-md border-0 outline-none focus:ring-0 w-auto cursor-pointer"
-            >
-              <option value="">All</option>
-              {categories.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 min-w-0 px-3 text-sm text-amazon-text outline-none border-0 sm:rounded-none rounded-l-md"
-            />
-            <button type="submit" className="bg-amazon-search-bg hover:bg-amazon-search-hover px-3 rounded-r-md transition-colors">
-              <Search className="h-5 w-5 text-amazon-text" />
-            </button>
+          <form onSubmit={handleSearch} className="flex-1 flex items-center min-w-0">
+            <div className="flex w-full items-center bg-gray-100 hover:bg-gray-200/70 rounded-2xl transition-colors focus-within:ring-2 focus-within:ring-indigo-500 focus-within:bg-white focus-within:border focus-within:border-indigo-200">
+              <Search className="h-4 w-4 text-gray-400 ml-4 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search products, brands and more..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 min-w-0 px-3 py-2.5 bg-transparent text-sm text-gray-900 outline-none placeholder-gray-400"
+              />
+              <select
+                value={searchCategory}
+                onChange={(e) => setSearchCategory(e.target.value)}
+                className="hidden sm:block text-xs text-gray-500 bg-transparent border-l border-gray-300 px-3 py-2.5 outline-none cursor-pointer max-w-[120px] truncate"
+              >
+                <option value="">All</option>
+                {categories.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <button
+                type="submit"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-r-2xl transition-colors flex-shrink-0"
+              >
+                Search
+              </button>
+            </div>
           </form>
 
-          {/* Account */}
-          <div className="hidden md:flex items-center gap-1 sm:gap-3">
+          {/* Desktop Right Actions */}
+          <div className="hidden md:flex items-center gap-2">
             {user ? (
-              <div className="relative group">
-                <div className="px-2 py-1 border border-transparent hover:border-white rounded cursor-pointer">
-                  <span className="text-xs text-gray-300 block leading-none">Hello, {user.name.split(" ")[0]}</span>
-                  <span className="text-sm font-bold leading-tight flex items-center gap-0.5">
-                    Account <ChevronDown className="h-3 w-3" />
-                  </span>
-                </div>
-                <div className="absolute right-0 top-full mt-0 w-48 bg-white rounded-md shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                  <Link to="/orders" className="block px-4 py-2 text-sm text-amazon-text hover:bg-gray-100">Your Orders</Link>
-                  <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-amazon-text hover:bg-gray-100">Sign Out</button>
-                </div>
+              <div className="relative">
+                <button
+                  onClick={() => setAccountOpen(!accountOpen)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-indigo-700 font-bold text-sm">{user.name[0].toUpperCase()}</span>
+                  </div>
+                  <div className="text-left hidden lg:block">
+                    <span className="text-xs text-gray-500 block leading-none">Hello,</span>
+                    <span className="text-sm font-semibold text-gray-900 leading-tight">{user.name.split(" ")[0]}</span>
+                  </div>
+                  <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
+                </button>
+                {accountOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setAccountOpen(false)} />
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-20">
+                      <div className="px-4 py-3 bg-indigo-50 border-b border-indigo-100">
+                        <p className="text-sm font-semibold text-indigo-900">{user.name}</p>
+                        <p className="text-xs text-indigo-500 truncate">{user.email}</p>
+                      </div>
+                      <Link
+                        to="/orders"
+                        onClick={() => setAccountOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Package className="h-4 w-4 text-gray-400" />
+                        My Orders
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full px-4 py-3 text-sm text-rose-600 hover:bg-rose-50 transition-colors border-t border-gray-100"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
-              <Link to="/login" className="px-2 py-1 border border-transparent hover:border-white rounded">
-                <span className="text-xs text-gray-300 block leading-none">Hello, sign in</span>
-                <span className="text-sm font-bold leading-tight flex items-center gap-0.5">
-                  Account <ChevronDown className="h-3 w-3" />
-                </span>
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-colors text-sm font-medium text-gray-700"
+              >
+                <User className="h-4 w-4" />
+                Sign In
               </Link>
             )}
 
-            <Link to="/orders" className="px-2 py-1 border border-transparent hover:border-white rounded hidden lg:block">
-              <span className="text-xs text-gray-300 block leading-none">Returns</span>
-              <span className="text-sm font-bold leading-tight">& Orders</span>
+            <Link
+              to={user ? "/cart" : "/login"}
+              className="relative flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              <span className="text-sm font-semibold hidden sm:block">Cart</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartCount > 9 ? "9+" : cartCount}
+                </span>
+              )}
             </Link>
           </div>
 
-          {/* Cart */}
-          <Link to={user ? "/cart" : "/login"} className="flex items-end gap-1 px-2 py-1 border border-transparent hover:border-white rounded flex-shrink-0">
-            <div className="relative">
-              <ShoppingCart className="h-8 w-8" />
-              <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-amazon-cart-badge font-bold text-base leading-none">
-                {cartCount || 0}
-              </span>
-            </div>
-            <span className="text-sm font-bold hidden sm:block">Cart</span>
-          </Link>
-
-          {/* Mobile menu button */}
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-1.5 border border-transparent hover:border-white rounded">
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          {/* Mobile Cart + Menu */}
+          <div className="md:hidden flex items-center gap-2">
+            <Link to={user ? "/cart" : "/login"} className="relative p-2">
+              <ShoppingCart className="h-6 w-6 text-gray-700" />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 bg-rose-500 text-white text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {cartCount > 9 ? "9+" : cartCount}
+                </span>
+              )}
+            </Link>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+            >
+              {mobileOpen ? <X className="h-5 w-5 text-gray-700" /> : <Menu className="h-5 w-5 text-gray-700" />}
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Sub Navigation Bar */}
-      <div className="bg-amazon-light text-white">
-        <div className="max-w-screen-amazon mx-auto px-4 flex items-center h-[40px] gap-0.5 overflow-x-auto hide-scrollbar text-sm">
-          <Link to="/products" className="flex items-center gap-1 px-2.5 py-1.5 hover:outline hover:outline-1 hover:outline-white rounded whitespace-nowrap flex-shrink-0 font-bold">
-            <Menu className="h-4 w-4" />
-            All
+      {/* Category Pills Bar */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-screen-amazon mx-auto px-4 flex items-center h-10 gap-2 overflow-x-auto hide-scrollbar">
+          <Link
+            to="/products"
+            className="flex-shrink-0 px-3.5 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-full whitespace-nowrap"
+          >
+            All Products
           </Link>
-          {["Mobiles", "Electronics", "Laptops", "Men's Clothing", "Women's Clothing", "Home & Kitchen", "Beauty", "Books", "Grocery", "Toys & Games"].map((cat) => (
+          {NAV_CATEGORIES.map((cat) => (
             <Link
               key={cat}
               to={`/products?category=${encodeURIComponent(cat)}`}
-              className="px-2.5 py-1.5 hover:outline hover:outline-1 hover:outline-white rounded whitespace-nowrap flex-shrink-0"
+              className="flex-shrink-0 px-3.5 py-1 bg-gray-100 hover:bg-indigo-50 text-gray-600 hover:text-indigo-700 text-xs font-medium rounded-full whitespace-nowrap transition-colors border border-transparent hover:border-indigo-200"
             >
               {cat}
             </Link>
@@ -149,29 +199,69 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white border-b border-gray-300 shadow-lg">
-          <div className="p-4 space-y-2">
+        <div className="md:hidden bg-white border-b border-gray-200 shadow-lg">
+          {/* Mobile Search */}
+          <form onSubmit={handleSearch} className="p-4 border-b border-gray-100">
+            <div className="flex items-center bg-gray-100 rounded-xl px-3 gap-2">
+              <Search className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 py-2.5 bg-transparent text-sm outline-none"
+              />
+              <button type="submit" className="text-indigo-600 font-semibold text-xs">Go</button>
+            </div>
+          </form>
+
+          <div className="p-4 space-y-1">
             {user ? (
               <>
-                <div className="px-3 py-2 bg-amazon-light text-white rounded font-bold text-sm">
-                  Hello, {user.name}
+                <div className="flex items-center gap-3 px-3 py-3 bg-indigo-50 rounded-xl mb-3">
+                  <div className="w-9 h-9 bg-indigo-100 rounded-full flex items-center justify-center">
+                    <span className="text-indigo-700 font-bold">{user.name[0].toUpperCase()}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500">{user.email}</p>
+                  </div>
                 </div>
-                <Link to="/orders" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-amazon-text hover:bg-gray-100 rounded">
-                  Your Orders
+                <Link
+                  to="/orders"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 rounded-xl"
+                >
+                  <Package className="h-4 w-4 text-gray-400" /> My Orders
                 </Link>
-                <Link to="/cart" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-amazon-text hover:bg-gray-100 rounded">
-                  Cart ({cartCount})
+                <Link
+                  to="/cart"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-100 rounded-xl"
+                >
+                  <ShoppingCart className="h-4 w-4 text-gray-400" /> Cart ({cartCount})
                 </Link>
-                <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded">
-                  Sign Out
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-rose-600 hover:bg-rose-50 rounded-xl"
+                >
+                  <LogOut className="h-4 w-4" /> Sign Out
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-amazon-text hover:bg-gray-100 rounded">
+                <Link
+                  to="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-3 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-xl text-center"
+                >
                   Sign In
                 </Link>
-                <Link to="/register" onClick={() => setMobileOpen(false)} className="block px-3 py-2 text-sm text-amazon-link hover:bg-blue-50 rounded">
+                <Link
+                  to="/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-3 py-2.5 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-xl text-center mt-2"
+                >
                   Create Account
                 </Link>
               </>

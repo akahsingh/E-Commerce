@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { User, Mail, Lock, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function Register() {
@@ -31,80 +32,105 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center py-8">
-      <div className="w-full max-w-[350px]">
-        <div className="text-center mb-6">
-          <Link to="/" className="text-2xl font-bold text-amazon-text">
-            Shop<span className="text-amazon-orange">Hub</span><span className="text-xs">.in</span>
-          </Link>
-        </div>
+    <div className="min-h-[85vh] bg-gradient-to-br from-violet-50 via-white to-indigo-50 flex items-center justify-center py-8 px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
 
-        <div className="border border-gray-300 rounded-lg p-5 bg-white">
-          <h1 className="text-[28px] font-normal text-amazon-text mb-4">Create account</h1>
+          {/* Gradient header */}
+          <div className="bg-gradient-to-br from-violet-600 to-indigo-700 px-8 pt-8 pb-14">
+            <Link to="/" className="flex items-center gap-0.5 mb-6">
+              <span className="text-2xl font-black text-white">Shop</span>
+              <span className="text-2xl font-black text-violet-200">Hub</span>
+            </Link>
+            <h1 className="text-3xl font-black text-white">Create account</h1>
+            <p className="text-violet-200 mt-1 text-sm">Join millions of happy shoppers</p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-bold text-amazon-text mb-1">Your name</label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="input-field"
-                placeholder="First and last name"
-              />
+          {/* Form card (overlaps header) */}
+          <div className="px-8 pb-8 -mt-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full name</label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 focus:bg-white placeholder-gray-400 transition-all"
+                      placeholder="Rahul Sharma"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 focus:bg-white placeholder-gray-400 transition-all"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 focus:bg-white placeholder-gray-400 transition-all"
+                      placeholder="At least 6 characters"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 focus:bg-white placeholder-gray-400 transition-all"
+                      placeholder="Re-enter your password"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold py-3 rounded-xl transition-colors mt-1"
+                >
+                  {loading ? "Creating account..." : <>Create account <ArrowRight className="h-4 w-4" /></>}
+                </button>
+              </form>
+
+              <p className="text-xs text-gray-400 mt-4 text-center">
+                By creating an account, you agree to our Terms &amp; Privacy Policy.
+              </p>
             </div>
 
-            <div>
-              <label className="block text-sm font-bold text-amazon-text mb-1">Email</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-field"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-amazon-text mb-1">Password</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-field"
-                placeholder="At least 6 characters"
-              />
-              <p className="text-xs text-amazon-text-secondary mt-1">Passwords must be at least 6 characters.</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-bold text-amazon-text mb-1">Re-enter password</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="input-field"
-              />
-            </div>
-
-            <button type="submit" disabled={loading} className="btn-primary w-full !py-2">
-              {loading ? "Creating account..." : "Create your ShopHub account"}
-            </button>
-          </form>
-
-          <p className="text-xs text-amazon-text-secondary mt-4 leading-relaxed">
-            By creating an account, you agree to ShopHub's Conditions of Use and Privacy Notice.
-          </p>
-
-          <div className="border-t border-gray-200 mt-4 pt-4">
-            <p className="text-sm text-amazon-text">
-              Already have an account? <Link to="/login" className="amazon-link">Sign in</Link>
+            <p className="text-sm text-center text-gray-500 mt-5">
+              Already have an account?{" "}
+              <Link to="/login" className="font-bold text-indigo-600 hover:text-indigo-800">
+                Sign in
+              </Link>
             </p>
           </div>
         </div>
